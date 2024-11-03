@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  jobs      Job[]    @relation("UserJobs")
+}
+
+model City {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  name       String
+  country    String
+  population Int?
+  capital    String?
+  iso2       String?
+  iso3       String?
+  admin_name String?
+  city_ascii String?
+  lat        Float
+  lng        Float
+  jobs       Job[]    @relation("CityJobs")
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  jobs      Job[]    @relation("CategoryJobs")
+}
+
+model Experience {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  jobs      Job[]    @relation("ExperienceJobs")
+}
+
+model Type {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  jobs      Job[]    @relation("TypeJobs")
+}
+
+model Qualification {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  jobs      Job[]    @relation("QualificationJobs")
+}
+
+model Gender {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  jobs      Job[]    @relation("GenderJobs")
+}
+
+model Job {
+  id                 Int              @id @default(autoincrement())
+  name               String
+  description               String
+  imageUrl               String
+  userId            Int
+  categoryId        Int
+  experienceId      Int
+  typeId            Int
+  qualificationId   Int
+  genderId          Int
+  cityId            Int?              // Adding a cityId field for relation
+  user              User              @relation("UserJobs", fields: [userId], references: [id])
+  category          Category          @relation("CategoryJobs", fields: [categoryId], references: [id])
+  experience        Experience        @relation("ExperienceJobs", fields: [experienceId], references: [id])
+  qualification     Qualification     @relation("QualificationJobs", fields: [qualificationId], references: [id])
+  gender            Gender            @relation("GenderJobs", fields: [genderId], references: [id])
+  createdAt         DateTime          @default(now())
+  city              City?             @relation("CityJobs", fields: [cityId], references: [id]) // Adding the relation
+  type              Type              @relation("TypeJobs", fields: [typeId], references: [id]) // Adding the relation
+}
