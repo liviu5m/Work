@@ -2,17 +2,23 @@
 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import RangeSlider from "react-range-slider-input";
+import "react-range-slider-input/dist/style.css";
 
 type Form = {
   name?: string;
   description?: string;
+  benefits?: string;
+  responsibilities?: string;
+  minSalary?: number;
+  maxSalary?: number;
   categoryId?: string;
   experienceId?: string;
   typeId?: string;
   qualificationId?: string;
   genderId?: string;
   location: Location;
-  benefits: string;
+  reset?: boolean;
 };
 
 type Location = {
@@ -44,6 +50,24 @@ export default function Inputs({
   const [types, setTypes] = useState<Element[]>();
   const [qualifications, setQualifications] = useState<Element[]>();
   const [genders, setGenders] = useState<Element[]>();
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    formValues.minSalary ? formValues.minSalary : 50000,
+    formValues.maxSalary ? formValues.maxSalary : 100000,
+  ]);
+
+  useEffect(() => {
+    setFormValues({
+      ...formValues,
+      minSalary: priceRange[0],
+      maxSalary: priceRange[1],
+    });
+  }, [priceRange]);
+
+  useEffect(() => {
+    if (formValues.reset) {
+      setPriceRange([50000, 100000]);
+    }
+  }, [formValues]);
 
   const changeLocation = (e: React.FormEvent<HTMLInputElement>) => {
     const searchValue = (e.target as HTMLInputElement).value;
@@ -63,6 +87,10 @@ export default function Inputs({
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const handleSliderChange = (value: [number, number]) => {
+    setPriceRange(value);
   };
 
   useEffect(() => {
@@ -294,6 +322,49 @@ export default function Inputs({
           })}
       </select>
       {size != "filter" && (
+        <div className="w-[500px]">
+          <h1 className="flex items-center justify-start gap-5 my-4">
+            <span className="text-[#27CB8B] font-semibold">Salary :</span>
+            <span>
+              <span className="text-[#00044A]">Min : </span>
+              <input
+                type="number"
+                step={1000}
+                max={300000}
+                min={20000}
+                value={priceRange[0]}
+                onChange={(e) =>
+                  setPriceRange([parseInt(e.target.value), priceRange[1]])
+                }
+                className="text-[#00044A] outline-none w-26 text-center px-2 py-1 rounded-lg border border-[#6D6E9E]"
+              />
+            </span>
+            <span>
+              <span className="text-[#00044A]">Max : </span>
+              <input
+                type="number"
+                step={1000}
+                max={300000}
+                min={20000}
+                value={priceRange[1]}
+                onChange={(e) =>
+                  setPriceRange([priceRange[0], parseInt(e.target.value)])
+                }
+                className="text-[#00044A] outline-none w-26 text-center px-2 py-1 rounded-lg border border-[#6D6E9E]"
+              />
+            </span>
+          </h1>
+          <RangeSlider
+            min={20000}
+            max={300000}
+            step={1000}
+            value={priceRange}
+            onInput={handleSliderChange}
+          />
+        </div>
+      )}
+
+      {size != "filter" && (
         <textarea
           name="description"
           placeholder="Job Description"
@@ -307,6 +378,20 @@ export default function Inputs({
             });
           }}
           value={formValues.description}
+        ></textarea>
+      )}
+      {size != "filter" && (
+        <textarea
+          name="benefits"
+          placeholder="Job Benefits"
+          className={`border border-[#d4d8db] w-[500px] outline-none px-10  py-5 h-[200px] resize-none`}
+          onChange={(e) => {
+            setFormValues({
+              ...formValues,
+              benefits: (e.target as HTMLTextAreaElement).value,
+            });
+          }}
+          value={formValues.benefits}
         ></textarea>
       )}
     </div>

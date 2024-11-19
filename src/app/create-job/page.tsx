@@ -19,12 +19,17 @@ type Location = {
 type Form = {
   name?: string;
   description?: string;
+  benefits?: string;
+  responsibilities?: string;
+  minSalary?: number;
+  maxSalary?: number;
   categoryId?: string;
   experienceId?: string;
   typeId?: string;
   qualificationId?: string;
   genderId?: string;
   location: Location;
+  reset?: boolean;
 };
 
 export default function page() {
@@ -53,9 +58,10 @@ export default function page() {
     name: "",
     description: "",
     location: { name: "", country: "", id: -1, population: 0 },
+    responsibilities: "",
   });
   const [file, setFile] = useState<string | null>(null);
-
+  
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) {
@@ -64,6 +70,11 @@ export default function page() {
     } else if (
       !formValues.name ||
       !formValues.description ||
+      !formValues.benefits ||
+      !formValues.responsibilities ||
+      !formValues.categoryId ||
+      !formValues.minSalary ||
+      !formValues.maxSalary ||
       !formValues.categoryId ||
       !formValues.experienceId ||
       !formValues.genderId ||
@@ -72,6 +83,7 @@ export default function page() {
       !formValues.typeId
     ) {
       toast.error("Please fill all fields");
+      return;
     } else {
       axios
         .post("/api/upload", { image: file })
@@ -84,15 +96,19 @@ export default function page() {
             })
             .then((res) => {
               console.log(res.data);
+              
               setFormValues({
                 name: "",
                 description: "",
+                benefits: "",
+                responsibilities: "",
                 categoryId: "",
                 experienceId: "",
                 typeId: "",
                 qualificationId: "",
                 genderId: "",
                 location: { name: "", country: "", id: -1, population: 0 },
+                reset: true
               });
               setFile("");
               toast.success("Job posted successfully");
@@ -119,10 +135,20 @@ export default function page() {
           <form
             className="flex items-center justify-center gap-20 flex-col"
             onSubmit={(e) => handleSubmit(e)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+              }
+            }}
           >
             <div className="flex items-center justify-center gap-10 w-full">
               <Inputs setFormValues={setFormValues} formValues={formValues} />
-              <ImageInput setFile={setFile} file={file} />
+              <ImageInput
+                setFormValues={setFormValues}
+                formValues={formValues}
+                setFile={setFile}
+                file={file}
+              />
             </div>
             <button className="w-[400px] px-7 text-center py-4 rounded-lg bg-[#27CB8B] text-white font-bold hover:shadow-xl shadow-lg hover:scale-105">
               POST

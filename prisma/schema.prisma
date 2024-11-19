@@ -7,15 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  jobs      Job[]    @relation("UserJobs")
-}
-
 model City {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now())
@@ -68,24 +59,52 @@ model Gender {
   jobs      Job[]    @relation("GenderJobs")
 }
 
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  jobs      Job[]     @relation("UserJobs")
+  requests  Request[] // Add relation to Request
+}
+
 model Job {
-  id                 Int              @id @default(autoincrement())
-  name               String
-  description               String
-  imageUrl               String
-  userId            Int
-  categoryId        Int
-  experienceId      Int
-  typeId            Int
-  qualificationId   Int
-  genderId          Int
-  cityId            Int?              // Adding a cityId field for relation
-  user              User              @relation("UserJobs", fields: [userId], references: [id])
-  category          Category          @relation("CategoryJobs", fields: [categoryId], references: [id])
-  experience        Experience        @relation("ExperienceJobs", fields: [experienceId], references: [id])
-  qualification     Qualification     @relation("QualificationJobs", fields: [qualificationId], references: [id])
-  gender            Gender            @relation("GenderJobs", fields: [genderId], references: [id])
-  createdAt         DateTime          @default(now())
-  city              City?             @relation("CityJobs", fields: [cityId], references: [id]) // Adding the relation
-  type              Type              @relation("TypeJobs", fields: [typeId], references: [id]) // Adding the relation
+  id               Int           @id @default(autoincrement())
+  name             String
+  description      String        @db.LongText
+  minSalary        Int
+  maxSalary        Int
+  benefits         String        @db.LongText
+  responsibilities String        @db.LongText
+  imageUrl         String
+  userId           Int
+  categoryId       Int
+  experienceId     Int
+  typeId           Int
+  qualificationId  Int
+  genderId         Int
+  cityId           Int?
+  user             User          @relation("UserJobs", fields: [userId], references: [id])
+  category         Category      @relation("CategoryJobs", fields: [categoryId], references: [id])
+  experience       Experience    @relation("ExperienceJobs", fields: [experienceId], references: [id])
+  qualification    Qualification @relation("QualificationJobs", fields: [qualificationId], references: [id])
+  gender           Gender        @relation("GenderJobs", fields: [genderId], references: [id])
+  createdAt        DateTime      @default(now())
+  city             City?         @relation("CityJobs", fields: [cityId], references: [id])
+  type             Type          @relation("TypeJobs", fields: [typeId], references: [id])
+  requests         Request[] // Add relation to Request
+}
+
+model Request {
+  id        Int      @id @default(autoincrement())
+  jobId     Int
+  userId    Int
+  name      String
+  email     String
+  weblink   String
+  letter    String   @db.LongText
+  createdAt DateTime @default(now())
+  job       Job      @relation(fields: [jobId], references: [id]) // Relation to Job
+  user      User     @relation(fields: [userId], references: [id]) // Relation to User
 }

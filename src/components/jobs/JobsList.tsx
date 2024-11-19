@@ -39,6 +39,7 @@ type Form = {
   qualificationId?: string;
   genderId?: string;
   location: Location;
+  userId?: number;
 };
 
 export default function JobsList({ filterValues }: { filterValues: Form }) {
@@ -73,6 +74,8 @@ export default function JobsList({ filterValues }: { filterValues: Form }) {
 
   if (loading) return <Loader />;
 
+  
+
   return jobs && jobs.length > 0 && paginatedJobs ? (
     <div className="w-4/5">
       <div className="bg-white rounded-lg px-7 py-5">
@@ -83,6 +86,7 @@ export default function JobsList({ filterValues }: { filterValues: Form }) {
           return (
             <JobCard
               key={job.id}
+              id={job.id}
               name={job.name || ""}
               imageUrl={job.imageUrl || ""}
               type={job.type || { name: "", id: 0 }}

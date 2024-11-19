@@ -8,14 +8,14 @@ type Element = {
 };
 
 export default function JobCard({
-  key,
+  id,
   name,
   imageUrl,
   location,
   type,
   createAt,
 }: {
-  key: number;
+  id: number;
   name: string;
   imageUrl: string;
   location: string;
@@ -39,7 +39,7 @@ export default function JobCard({
       </div>
       <div className="w-7/12">
         <h1 className="text-3xl hover:text-[#27CB8B] w-fit">
-          <a href={`/job/${key}`}>{name}</a>
+          <a href={`/job/${id}`}>{name}</a>
         </h1>
         <div className="flex items-center justify-start mt-5 gap-14">
           <div className="flex items-center justify-center gap-3 text-[#6D6E9E]">
@@ -55,7 +55,7 @@ export default function JobCard({
       <div className="w-2/12 flex flex-col gap-5 items-center justify-center">
         <a
           className="px-5 text-center py-3 w-40 rounded-lg bg-[#27CB8B] text-white font-bold hover:shadow-xl shadow-lg border border-[#27CB8B] hover:text-[#27CB8B] hover:bg-transparent"
-          href={`/job/${key}`}
+          href={`/job/${id}`}
         >
           Apply Now
         </a>

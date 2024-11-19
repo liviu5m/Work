@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Logo from "./Logo";
@@ -7,16 +7,15 @@ import { useAppContext } from "@/lib/AppContext";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const {user} = useAppContext();
+  const { user } = useAppContext();
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 0) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 0);
     };
+
+    // Check scroll position on mount
+    handleScroll();
 
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -39,7 +38,7 @@ export default function Header() {
             <li>
               <a
                 href="/"
-                className="hover:text-[#020DFF] p-1 a relative decoration-0 inline-block"
+                className="hover:text-[#020DFF] p-1 relative decoration-0 inline-block"
               >
                 HOME
               </a>
@@ -47,23 +46,23 @@ export default function Header() {
             <li>
               <a
                 href="/jobs"
-                className="hover:text-[#020DFF] p-1 a relative decoration-0 inline-block"
+                className="hover:text-[#020DFF] p-1 relative decoration-0 inline-block"
               >
                 BROWSE JOB
               </a>
             </li>
             <li>
               <a
-                href="/blog"
-                className="hover:text-[#020DFF] p-1 a relative decoration-0 inline-block"
+                href="/requests"
+                className="hover:text-[#020DFF] p-1 relative decoration-0 inline-block"
               >
-                BLOG
+                REQUESTS
               </a>
             </li>
             <li>
               <a
                 href="/contact"
-                className="hover:text-[#020DFF] p-1 a relative decoration-0 inline-block"
+                className="hover:text-[#020DFF] p-1 relative decoration-0 inline-block"
               >
                 CONTACT
               </a>
@@ -79,7 +78,7 @@ export default function Header() {
           </a>
           <a
             href={user ? "/account" : "/login"}
-            className="px-7 py-4 w-40 text-center rounded-lg bg-[#020DFF] text-white font-bold button2 shadow-lg hover:scale-105 hover:shadow-xl"
+            className="px-7 py-4 w-40 text-center rounded-lg bg-[#020DFF] text-white font-bold shadow-lg hover:scale-105 hover:shadow-xl"
           >
             {user ? user.name : "LOG IN"}
           </a>
